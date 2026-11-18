@@ -62,7 +62,34 @@ animation navnet (det, der dækker, glider eller toner væk), uanset om svaret v
 5. **Game over**: score, gemmes i Firestore
 6. **Highscores**: liste (FlatList) fra Firestore, sorteret efter score
 
-## 4. Datamodel (Firestore)
+## 4. Mappestruktur
+
+Enkel opdeling: hver mappe har én opgave, og der er ingen ekstra lag.
+
+```
+App.js                 # Indgang: starter navigationen, intet andet
+src/
+  screens/             # Én fil pr. skærm. Sætter komponenter sammen og viser data
+                       #   LoginScreen, HomeScreen, GameScreen, GameOverScreen, HighscoreScreen
+  components/          # Genbrugelige UI-dele uden egen datahentning
+                       #   CardImage (billede og tildækning), LivesDisplay, GuessInput
+  navigation/          # AppNavigator.js: stack-navigatoren
+  hooks/               # Spillogik som custom hook: useGame (liv, score, nyt kort, gæt)
+  services/            # Al kontakt med omverdenen
+                       #   scryfall.js (hent kort), firebase.js (opsætning), highscores.js (CRUD)
+  utils/               # Rene hjælpefunktioner uden React, nemme at teste
+                       #   normalizeName.js, isCorrectGuess.js
+  constants.js         # Faste værdier: START_LIVES = 5, farver, overlay-procenter
+```
+
+**Regler:**
+
+- Skærme kalder hooks og services, aldrig `fetch` eller Firebase direkte.
+- Komponenter får data via props.
+- Logik i `utils/` kender ikke til React.
+- Opret kun en ny mappe eller fil, når der er brug for den.
+
+## 5. Datamodel (Firestore)
 
 ```
 highscores/{autoId}
@@ -74,7 +101,7 @@ highscores/{autoId}
 
 CRUD-dækning: create (gem score), read (leaderboard), update (f.eks. brugerens visningsnavn), delete (slet egne scores).
 
-## 5. Milepæle
+## 6. Milepæle
 
 | Uge | Dato          | Mål                                                                                                              |
 | --- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -85,13 +112,13 @@ CRUD-dækning: create (gem score), read (leaderboard), update (f.eks. brugerens 
 | 51  | 14/12–        | Polering, fejlhåndtering, screenshots og skriftlig forklaring                                                    |
 | —   | 12.–15/1 2027 | Eksamen                                                                                                          |
 
-## 6. Aflevering
+## 7. Aflevering
 
 - Screenshots af koden og af appen
 - Forklaring af det vigtigste i koden
 - Demo-video under 1 minut (frist 4/12)
 
-## 7. Mulige udvidelser (kun hvis der er tid)
+## 8. Mulige udvidelser (kun hvis der er tid)
 
 - Hints: ét liv for at se manaomkostning eller korttype
 - Sværhedsgrader og tidsbegrænsning
